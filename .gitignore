@@ -1,3 +1,4 @@
 config.py
 .gitignore
 corpus/
+embeddings.npy
