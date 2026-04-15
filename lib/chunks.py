@@ -38,3 +38,31 @@ def chunk_glossary(filepath):
         })
     
     return chunks
+
+
+
+
+def chunk_A(filepath):
+    chunks = []
+    current_heading = None
+    current_lines = []
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+
+    for i, line in enumerate(lines):
+        next_line = lines[i + 1].strip() if i + 1 < len(lines) else ""
+        is_heading = len(next_line) > 2 and all(char == "=" for char in next_line)
+
+        if is_heading:
+            if current_heading is not None:
+                chunks.append({"heading": current_heading, "text": "".join(current_lines)})
+            current_heading = line.strip()
+            current_lines = []
+        else:
+            current_lines.append(line)
+
+    if current_heading is not None:
+        chunks.append({"heading": current_heading, "text": "".join(current_lines)})
+
+    return chunks
