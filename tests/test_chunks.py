@@ -12,3 +12,9 @@ def test_A():
     assert isinstance(chunks,list)
     assert chunks[0]['heading'] == "Sorting Basics"
     assert len(chunks) == 10
+
+def test_B():
+    filepath = 'corpus/library/functions.txt'
+    chunks = chunk_B(filepath)
+    assert isinstance(chunks,list)
+    assert chunks[0]["signature"] == "abs(number, /)"
