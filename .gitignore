@@ -5,3 +5,4 @@ embeddings.npy
 __pycache__/
 .pytest_cache/
 chunks.json
+*venv*/
