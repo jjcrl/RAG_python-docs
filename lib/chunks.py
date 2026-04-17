@@ -14,8 +14,10 @@ def chunk_glossary(filepath):
             # save the previous term before starting a new one
             if current_term is not None:
                 chunks.append({
-                    "term": current_term,
-                    "text": "".join(current_lines)
+                    "heading": current_term,
+                    "text": "".join(current_lines),
+                    "source":filepath,
+                    "pattern":"D"
                 })
             # start the new term
             current_term = line.strip()
@@ -26,8 +28,10 @@ def chunk_glossary(filepath):
     # save the final term after the loop ends
     if current_term is not None:
         chunks.append({
-            "term": current_term,
-            "text": "".join(current_lines)
+            "heading": current_term,
+            "text": "".join(current_lines),
+            "source":filepath,
+            "pattern": "D"
         })
     return chunks
 
@@ -42,39 +46,62 @@ def chunk_A(filepath):
         is_heading = len(next_line) > 2 and all(char == "=" for char in next_line)
         if is_heading:
             if current_heading is not None:
-                chunks.append({"heading": current_heading, "text": "".join(current_lines)})
+                chunks.append({"heading": current_heading, 
+                               "text": "".join(current_lines),
+                               "source": filepath,
+                               "patterns":"A"
+                               })
             current_heading = line.strip()
             current_lines = []
         else:
             current_lines.append(line)
     if current_heading is not None:
-        chunks.append({"heading": current_heading, "text": "".join(current_lines)})
+        chunks.append({"heading": current_heading, 
+                       "text": "".join(current_lines),
+                       "source":filepath,
+                       "pattern":"A"
+                       })
     return chunks
+
 
 def chunk_B(filepath):
     chunks = []
     current_signature = None
     current_lines = []
-    with open(filepath,'r',encoding='utf-8') as f:
+
+    with open(filepath, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    for i,line in enumerate(lines):
-        next_line = lines[i + 1].strip() if i + 1 < len(lines) else ""
+
+    for i, line in enumerate(lines):
         is_signature = (
-                line and not 
-                line.startswith(" ") and 
-                "|" not in line and 
-                ('(' in line or line.startswith("@")) and 
-                (line.rstrip().endswith(")") or line.rstrip().endswith("):"))
-                )
+            line and
+            not line.startswith(" ") and
+            "|" not in line and
+            ("(" in line or line.startswith("@")) and
+            (line.rstrip().endswith(")") or line.rstrip().endswith("):"))
+        )
+
         if is_signature:
             if current_signature is not None:
-                chunks.append({'signature':current_signature,"text":"".join(current_lines)})
+                chunks.append({
+                    "heading": current_signature,
+                    "text": "".join(current_lines),
+                    "source": filepath,
+                    "pattern": "B"
+                })
             current_signature = line.strip()
             current_lines = [line]
         else:
             current_lines.append(line)
-        if current_signature is not None:
-            chunks.append({"signature":current_signature,"text":"".join(current_lines)})
+
+    if current_signature is not None:
+        chunks.append({
+            "heading": current_signature,
+            "text": "".join(current_lines),
+            "source": filepath,
+            "pattern": "B"
+        })
+
     return chunks
 
 def chunk_C(filepath):
@@ -88,11 +115,31 @@ def chunk_C(filepath):
         is_sub_heading = len(next_line) > 2 and all(char == "-" for char in next_line)
         if is_sub_heading:
             if current_sub_heading is not None:
-                chunks.append({"sub-heading": current_sub_heading, "text": "".join(current_lines)})
+                chunks.append({"heading": current_sub_heading, 
+                               "text": "".join(current_lines),
+                               "source":filepath,
+                               "pattern":"C"
+                               })
             current_sub_heading = line.strip()
             current_lines = []
         else:
             current_lines.append(line)
     if current_sub_heading is not None:
-        chunks.append({"sub-heading": current_sub_heading, "text": "".join(current_lines)})
+        chunks.append({"heading": current_sub_heading, 
+                       "text": "".join(current_lines),
+                       "source":filepath,
+                       "pattern":"C"
+                       })
     return chunks
+
+
+def chunk_E(filepath):
+    with open(filepath, 'r', encoding='utf-8') as f:
+        text = f.read()
+    
+    return [{
+        "heading": filepath,
+        "text": text,
+        "source": filepath,
+        "pattern": "E"
+    }]

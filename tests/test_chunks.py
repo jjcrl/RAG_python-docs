@@ -4,7 +4,7 @@ def test_glossary():
     filepath = "corpus/glossary.txt"
     chunks = chunk_glossary(filepath)
     assert isinstance(chunks,list)
-    assert chunks[0]["term"] == '">>>"'
+    assert chunks[0]["heading"] == '">>>"'
 
 def test_A():
     filepath = 'corpus/howto/sorting.txt'
@@ -17,11 +17,17 @@ def test_B():
     filepath = 'corpus/library/functions.txt'
     chunks = chunk_B(filepath)
     assert isinstance(chunks,list)
-    assert chunks[0]["signature"] == "abs(number, /)"
-
+    assert chunks[0]["heading"] == "abs(number, /)"
 
 def test_C():
     filepath = 'corpus/faq/programming.txt'
     chunks = chunk_C(filepath)
     assert isinstance(chunks,list)
-    assert chunks[0]["sub-heading"] == "Is there a source code-level debugger with breakpoints and single-stepping?"
+    assert chunks[0]["heading"] == "Is there a source code-level debugger with breakpoints and single-stepping?"
+
+def test_E():
+    filepath = 'corpus/tutorial/appetite.txt'
+    chunks = chunk_E(filepath)
+    assert isinstance(chunks,list)
+    assert len(chunks) == 1
+    assert "appetite" in chunks[0]["text"].lower()
