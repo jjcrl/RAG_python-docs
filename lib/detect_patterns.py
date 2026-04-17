@@ -42,10 +42,3 @@ def detect_pattern(filepath):
                 
 
 
-for root,dirs,files in os.walk(path):
-    for file in files:
-        if file.endswith(".txt"):
-            filepath = os.path.join(root,file)
-            print(filepath,detect_pattern(filepath))
-
-

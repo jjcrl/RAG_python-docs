@@ -1,3 +1,8 @@
+from lib.detect_patterns import detect_pattern
+import os
+import json
+
+
 def chunk_glossary(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         lines = f.readlines()
@@ -49,7 +54,7 @@ def chunk_A(filepath):
                 chunks.append({"heading": current_heading, 
                                "text": "".join(current_lines),
                                "source": filepath,
-                               "patterns":"A"
+                               "pattern":"A"
                                })
             current_heading = line.strip()
             current_lines = []
@@ -143,3 +148,33 @@ def chunk_E(filepath):
         "source": filepath,
         "pattern": "E"
     }]
+
+
+def chunk_file(filepath):
+    pattern = detect_pattern(filepath)
+    if pattern == "D":
+        return chunk_glossary(filepath)
+    elif pattern == "A":
+        return chunk_A(filepath)
+    elif pattern == "B":
+        return chunk_B(filepath)
+    elif pattern == 'C':
+        return chunk_C(filepath)
+    else:
+        return chunk_E(filepath)
+    
+
+def chunk_all():
+    current_dir = os.getcwd()
+    path = os.path.join(current_dir,'corpus')
+    chunks = []
+    for root,dirs,files in os.walk(path):
+        for file in files:
+            if file.endswith(".txt"):
+                filepath = os.path.join(root,file)
+                chunks.extend(chunk_file(filepath))
+        with open("chunks.json",'w',encoding="utf-8") as f:
+            json.dump(chunks,f,indent = 2)
+
+
+chunk_all()

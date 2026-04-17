@@ -31,3 +31,10 @@ def test_E():
     assert isinstance(chunks,list)
     assert len(chunks) == 1
     assert "appetite" in chunks[0]["text"].lower()
+
+
+def test_chunk_file():
+    filepath = 'corpus/glossary.txt'
+    chunks = chunk_file(filepath)
+    assert isinstance(chunks,list)
+    assert chunks[0]['pattern'] == 'D'
